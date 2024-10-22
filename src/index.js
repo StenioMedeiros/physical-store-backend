@@ -25,14 +25,14 @@ function operation(){
         const action = resposta['action']
         console.log(action)
 
-        if(action === 'Criar conta'){
-            createAccount()
-        }else if(action === 'Consultar Saldo'){
-            getAccountBalance()
-        }else if(action === 'Depositar'){
-            deposit()
-        }else if(action === 'Sacar'){
-            withdraw()
+        if(action === 'Adicionar Lojá'){
+            adicionarLoja()
+        }else if(action === 'Buscar lojá'){
+            buscarLoja()
+        }else if(action === 'Buscar lojás no raio de 100 KM'){
+            buscar_100KM()
+        }else if(action === 'Lojá Mais procima'){
+            lojaMaisProcima()
         }else if(action === 'Sair'){
             console.log(chalk.bgBlue.black('Obrigado por usar o Accounts'))
             process.exit()
