@@ -1,0 +1,14 @@
+[
+  {
+    "nome": "Loja Centro",
+    "endereco": "Rua A, 123",
+    "cep": "12345000",
+    "telefone": "123456789"
+  },
+  {
+    "nome": "Loja Bairro",
+    "endereco": "Av. B, 456",
+    "cep": "98765000",
+    "telefone": "987654321"
+  }
+]
