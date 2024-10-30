@@ -63,7 +63,6 @@ class LojaController {
 
             // Buscar as coordenadas do CEP        
             const coordenadasCepLoja = await converterCepCoordenadas(endereco.cep);
-            console.log(coordenadasCepLoja);
 
             if (!coordenadasCepLoja) {
                 warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
