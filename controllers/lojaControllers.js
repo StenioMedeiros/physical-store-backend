@@ -21,31 +21,19 @@ class LojaController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { nome, endereco, telefone } = req.body;
-                // Validação do campo "nome"
                 if (!nome) {
                     logger_1.warnLogger.warn('Nome inválido ao tentar criar uma loja', { nome });
                     return res.status(400).json({ message: 'O campo "nome" é obrigatório.' });
                 }
-                // Validação do campo "cep"
                 const isValidCep = (cep) => /^[0-9]{8}$/.test(cep);
                 if (!endereco.cep || !isValidCep(endereco.cep)) {
                     logger_1.warnLogger.warn('CEP inválido ao tentar criar uma loja', { cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep });
                     return res.status(400).json({ message: 'O campo "cep" é obrigatório e deve ser um CEP válido de 8 dígitos.' });
                 }
-                // Buscar o endereço completo pelo CEP utilizando a API ViaCEP
                 const enderecoCompleto = yield (0, buscarEnderecoCep_1.buscarEnderecoCep)(endereco.cep);
                 if (!enderecoCompleto) {
                     logger_1.warnLogger.warn('Endereço não encontrado para o CEP fornecido', { cep: endereco.cep });
                     return res.status(400).json({ message: 'CEP inválido ou não encontrado.' });
-                }
-                // Verificação dos campos obrigatórios
-                const camposObrigatorios = ['logradouro', 'bairro', 'localidade', 'uf'];
-                const camposPendentes = camposObrigatorios.filter(campo => !enderecoCompleto[campo]);
-                if (camposPendentes.length > 0) {
-                    return res.status(400).json({
-                        message: `Os seguintes campos do endereço estão pendentes e precisam ser fornecidos: ${camposPendentes.join(', ')}`,
-                        camposPendentes
-                    });
                 }
                 const novoEndereco = {
                     logradouro: enderecoCompleto.logradouro || endereco.logradouro,
@@ -55,10 +43,18 @@ class LojaController {
                     cep: endereco.cep,
                     numero: endereco.numero
                 };
-                // Declaração da variável novasCoordenadas
+                const camposObrigatorios = ['logradouro', 'bairro', 'cidade', 'estado'];
+                const camposPendentes = camposObrigatorios.filter(campo => !novoEndereco[campo]);
+                if (camposPendentes.length > 0) {
+                    return res.status(400).json({
+                        message: `Os seguintes campos do endereço estão pendentes e precisam ser fornecidos: ${camposPendentes.join(', ')}`,
+                        camposPendentes
+                    });
+                }
                 let novasCoordenadas;
-                // Buscar as coordenadas do CEP da loja
+                // Buscar as coordenadas do CEP        
                 const coordenadasCepLoja = yield (0, converterCep_1.converterCepCoordenadas)(endereco.cep);
+                console.log(coordenadasCepLoja);
                 if (!coordenadasCepLoja) {
                     logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
                     if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
@@ -74,14 +70,15 @@ class LojaController {
                 }
                 else {
                     novasCoordenadas = {
-                        latitude: coordenadasCepLoja.latitude,
-                        longitude: coordenadasCepLoja.longitude
+                        latitude: coordenadasCepLoja.lat,
+                        longitude: coordenadasCepLoja.lng
                     };
                 }
                 // Criar a loja no banco de dados
                 yield (0, loja_1.criarLoja)({
                     nome,
-                    endereco: Object.assign({}, novoEndereco),
+                    endereco: novoEndereco,
+                    coordenadas: novasCoordenadas,
                     telefone
                 });
                 logger_1.infoLogger.info('Loja criada com sucesso', { nome, endereco: novoEndereco });
@@ -91,7 +88,6 @@ class LojaController {
                 logger_1.errorLogger.error('Erro ao criar a loja', { error: err.message });
                 res.status(500).json({ message: 'Erro ao criar a loja', error: err.message });
             }
-            return res.status(201).json({ message: 'Loja criada com sucesso' });
         });
     }
 }

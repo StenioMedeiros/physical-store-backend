@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const database_1 = __importDefault(require("./db/database"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const lojaRoutes_1 = __importDefault(require("./routes/lojaRoutes"));
+const logger_1 = require("c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger");
 dotenv_1.default.config();
 const PORT = process.env.PORT || 5000;
 const app = (0, express_1.default)();
@@ -16,7 +17,7 @@ app.use(express_1.default.json());
 app.use('/lojas', lojaRoutes_1.default);
 // Conectar ao servidor
 app.listen(PORT, () => {
-    //logger.loggerConn.info(`Servidor rodando na porta ${PORT}`);
+    (0, logger_1.logConn)(`Servidor rodando na porta ${PORT}`);
     console.log(`Servidor rodando na porta ${PORT}`);
 });
 database_1.default.connect((err, client, release) => {

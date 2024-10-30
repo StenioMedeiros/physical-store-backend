@@ -1,6 +1,5 @@
 // models/loja.ts
-
-import pool from '../db/database'; // Importa a função de conexão
+import pool from '../db/database'; 
 
 // Define a interface para o modelo Loja
 interface Endereco {
@@ -22,16 +21,13 @@ interface Loja {
     endereco: Endereco;
     coordenadas: coordenadas;
     telefone: string;
-
-
-
 }
 
 // Função para criar uma nova loja no banco de dados
-const criarLoja = async (loja: Loja): Promise<void> => {
+const criarLoja = async (loja: { nome: string; endereco: any; coordenadas: any; telefone: string }): Promise<void> => {
     const query = `
         INSERT INTO lojas (nome, logradouro, bairro, cidade, estado, numero,telefone, cep, latitude, longitude)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
 
     const values = [
@@ -40,11 +36,12 @@ const criarLoja = async (loja: Loja): Promise<void> => {
         loja.endereco.bairro,
         loja.endereco.cidade,
         loja.endereco.estado,
-        loja.endereco.numero,
+        loja.endereco.numero,       
+        loja.telefone,
         loja.endereco.cep,
         loja.coordenadas.latitude,
         loja.coordenadas.longitude,
-        loja.telefone,
+
         
     ];
 

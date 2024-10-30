@@ -39,18 +39,6 @@ class LojaController {
                 warnLogger.warn('Endereço não encontrado para o CEP fornecido', { cep: endereco.cep });
                 return res.status(400).json({ message: 'CEP inválido ou não encontrado.' });
             }
-
-           /*/ const camposObrigatorios = ['logradouro', 'bairro', 'localidade', 'uf'] as const;
-            //const camposPendentes = camposObrigatorios.filter(campo => !enderecoCompleto[campo as keyof typeof enderecoCompleto]);
-
-            }
-            if (camposPendentes.length > 0) {
-                return res.status(400).json({
-                    message: `Os seguintes campos do endereço estão pendentes e precisam ser fornecidos: ${camposPendentes.join(', ')}`,
-                    camposPendentes
-                });
-            }
-*/
             const novoEndereco = {
                 logradouro: enderecoCompleto.logradouro || endereco.logradouro,
                 bairro: enderecoCompleto.bairro || endereco.bairro,

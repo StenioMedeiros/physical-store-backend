@@ -14,7 +14,7 @@ async function converterCepCoordenadas(cep: string): Promise<Coordenadas | null>
 
   try {
     const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${cep}&key=${process.env.GOOGLE_API_KEY}`);
-    logInfo('Resposta da API: ' + JSON.stringify(response.data)); // Convertendo a resposta para string
+    logInfo('Resposta da API: ' + JSON.stringify(response.data)); // Convertendo a resposta 
 
     const lojaLocation = response.data.results[0]?.geometry?.location;
 

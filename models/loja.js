@@ -1,5 +1,4 @@
 "use strict";
-// models/loja.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,12 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.criarLoja = void 0;
-const database_1 = __importDefault(require("../db/database")); // Importa a função de conexão
+// models/loja.ts
+const database_1 = __importDefault(require("../db/database"));
 // Função para criar uma nova loja no banco de dados
 const criarLoja = (loja) => __awaiter(void 0, void 0, void 0, function* () {
     const query = `
-        INSERT INTO lojas (nome, logradouro, bairro, cidade, estado, numero,telefone, cep)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO lojas (nome, logradouro, bairro, cidade, estado, numero,telefone, cep, latitude, longitude)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
     const values = [
         loja.nome,
@@ -28,8 +28,10 @@ const criarLoja = (loja) => __awaiter(void 0, void 0, void 0, function* () {
         loja.endereco.cidade,
         loja.endereco.estado,
         loja.endereco.numero,
-        loja.endereco.cep,
         loja.telefone,
+        loja.endereco.cep,
+        loja.coordenadas.latitude,
+        loja.coordenadas.longitude,
     ];
     try {
         yield database_1.default.query(query, values);
