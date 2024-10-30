@@ -14,20 +14,18 @@ class LojaController {
     // Método para criar uma nova loja
     static async createLoja(req: any, res:any) {
         try {
-            const { nome, endereco, coordenadas, telefone } = req.body as { 
+            const { nome, endereco, telefone } = req.body as { 
                 nome: string; 
                 endereco: { logradouro: string; bairro: string; cidade: string; estado: string; numero: string; cep: string };
                 coordenadas:{latitude: Number; longitude: Number} 
                 telefone: string; 
             };
 
-            // Validação do campo "nome"
             if (!nome) {
                 warnLogger.warn('Nome inválido ao tentar criar uma loja', { nome });
                 return res.status(400).json({ message: 'O campo "nome" é obrigatório.' });
             }
 
-            // Validação do campo "cep"
             const isValidCep = (cep: string) => /^[0-9]{8}$/.test(cep);
             if (!endereco.cep || !isValidCep(endereco.cep)) {
                 warnLogger.warn('CEP inválido ao tentar criar uma loja', { cep: endereco?.cep });
@@ -35,7 +33,6 @@ class LojaController {
             }
 
 
-            // Buscar o endereço completo pelo CEP utilizando a API ViaCEP
             const enderecoCompleto = await buscarEnderecoCep(endereco.cep);
 
             if (!enderecoCompleto) {
@@ -43,17 +40,17 @@ class LojaController {
                 return res.status(400).json({ message: 'CEP inválido ou não encontrado.' });
             }
 
-            // Verificação dos campos obrigatórios
-            const camposObrigatorios = ['logradouro', 'bairro', 'localidade', 'uf'] as const;
-            const camposPendentes = camposObrigatorios.filter(campo => !enderecoCompleto[campo as keyof typeof enderecoCompleto]);
+           /*/ const camposObrigatorios = ['logradouro', 'bairro', 'localidade', 'uf'] as const;
+            //const camposPendentes = camposObrigatorios.filter(campo => !enderecoCompleto[campo as keyof typeof enderecoCompleto]);
 
+            }
             if (camposPendentes.length > 0) {
                 return res.status(400).json({
                     message: `Os seguintes campos do endereço estão pendentes e precisam ser fornecidos: ${camposPendentes.join(', ')}`,
                     camposPendentes
                 });
             }
-
+*/
             const novoEndereco = {
                 logradouro: enderecoCompleto.logradouro || endereco.logradouro,
                 bairro: enderecoCompleto.bairro || endereco.bairro,
@@ -63,11 +60,22 @@ class LojaController {
                 numero: endereco.numero
             };
 
-            // Declaração da variável novasCoordenadas
+            const camposObrigatorios = ['logradouro', 'bairro', 'cidade', 'estado'] as const;
+            const camposPendentes = camposObrigatorios.filter(campo => !novoEndereco[campo]);
+
+            if (camposPendentes.length > 0) {
+                return res.status(400).json({
+                    message: `Os seguintes campos do endereço estão pendentes e precisam ser fornecidos: ${camposPendentes.join(', ')}`,
+                    camposPendentes
+                });
+            }
+            
+ 
             let novasCoordenadas: { latitude: number; longitude: number };
 
-            // Buscar as coordenadas do CEP da loja
+            // Buscar as coordenadas do CEP        
             const coordenadasCepLoja = await converterCepCoordenadas(endereco.cep);
+            console.log(coordenadasCepLoja);
 
             if (!coordenadasCepLoja) {
                 warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
@@ -82,8 +90,8 @@ class LojaController {
                 }
             } else {
                 novasCoordenadas = {
-                    latitude: coordenadasCepLoja.latitude,
-                    longitude: coordenadasCepLoja.longitude
+                    latitude: coordenadasCepLoja.lat ,
+                    longitude: coordenadasCepLoja.lng
                 };
             }
 
@@ -100,7 +108,6 @@ class LojaController {
             errorLogger.error('Erro ao criar a loja', { error: err.message });
             res.status(500).json({ message: 'Erro ao criar a loja', error: err.message });
         }
-    return res.status(201).json({ message: 'Loja criada com sucesso' });
     }
 }
 
