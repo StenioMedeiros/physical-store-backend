@@ -9,4 +9,7 @@ const router = Router(); // Cria uma instância do Router
 // Criar loja
 router.post('/create', LojaController.createLoja);
 
+//Atualizar loja
+router.put('/:id', LojaController.updateLoja);
+
 export default router; 

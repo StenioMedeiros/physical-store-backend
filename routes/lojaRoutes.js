@@ -10,4 +10,6 @@ const router = (0, express_1.Router)(); // Cria uma instância do Router
 // CRUD routes para LojaController
 // Criar loja
 router.post('/create', LojaControllers_1.default.createLoja);
+//Atualizar loja
+router.put('/:id', LojaControllers_1.default.updateLoja);
 exports.default = router;

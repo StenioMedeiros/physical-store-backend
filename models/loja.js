@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.criarLoja = void 0;
+exports.buscarLojaPorId = buscarLojaPorId;
+exports.atualizarLoja = atualizarLoja;
 // models/loja.ts
 const database_1 = __importDefault(require("../db/database"));
 // Função para criar uma nova loja no banco de dados
@@ -42,3 +44,77 @@ const criarLoja = (loja) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.criarLoja = criarLoja;
+// Função para buscar loja pelo ID
+function buscarLojaPorId(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const query = 'SELECT * FROM lojas WHERE id = $1';
+        const values = [id];
+        try {
+            const result = yield database_1.default.query(query, values);
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Erro ao buscar a loja:', error);
+            throw error;
+        }
+    });
+}
+function atualizarLoja(id, novosDados) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(novosDados, id);
+        const fields = [];
+        const values = [];
+        let index = 1;
+        if (novosDados.nome) {
+            fields.push(`nome = $${index++}`);
+            values.push(novosDados.nome);
+        }
+        if (novosDados.endereco) {
+            if (novosDados.endereco.logradouro) {
+                fields.push(`logradouro = $${index++}`);
+                values.push(novosDados.endereco.logradouro);
+            }
+            if (novosDados.endereco.bairro) {
+                fields.push(`bairro = $${index++}`);
+                values.push(novosDados.endereco.bairro);
+            }
+            if (novosDados.endereco.cidade) {
+                fields.push(`cidade = $${index++}`);
+                values.push(novosDados.endereco.cidade);
+            }
+            if (novosDados.endereco.estado) {
+                fields.push(`estado = $${index++}`);
+                values.push(novosDados.endereco.estado);
+            }
+            if (novosDados.endereco.numero) {
+                fields.push(`numero = $${index++}`);
+                values.push(novosDados.endereco.numero);
+            }
+            if (novosDados.endereco.cep) {
+                fields.push(`cep = $${index++}`);
+                values.push(novosDados.endereco.cep);
+            }
+        }
+        if (novosDados.coordenadas) {
+            if (novosDados.coordenadas.latitude) {
+                fields.push(`latitude = $${index++}`);
+                values.push(novosDados.coordenadas.latitude);
+            }
+            if (novosDados.coordenadas.longitude) {
+                fields.push(`longitude = $${index++}`);
+                values.push(novosDados.coordenadas.longitude);
+            }
+        }
+        if (novosDados.telefone) {
+            fields.push(`telefone = $${index++}`);
+            values.push(novosDados.telefone);
+        }
+        if (fields.length === 0) {
+            throw new Error('Nenhum campo para atualizar.');
+        }
+        console.log(fields.join(', '), values);
+        const query = `UPDATE lojas SET ${fields.join(', ')} WHERE id = $${index}`;
+        values.push(id);
+        yield database_1.default.query(query, values);
+    });
+}

@@ -54,7 +54,6 @@ class LojaController {
                 let novasCoordenadas;
                 // Buscar as coordenadas do CEP        
                 const coordenadasCepLoja = yield (0, converterCep_1.converterCepCoordenadas)(endereco.cep);
-                console.log(coordenadasCepLoja);
                 if (!coordenadasCepLoja) {
                     logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
                     if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
@@ -87,6 +86,70 @@ class LojaController {
             catch (err) {
                 logger_1.errorLogger.error('Erro ao criar a loja', { error: err.message });
                 res.status(500).json({ message: 'Erro ao criar a loja', error: err.message });
+            }
+        });
+    }
+    static updateLoja(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { nome, telefone, endereco: { logradouro, bairro, cidade, estado, numero, cep, } = {}, coordenadas: { latitude, longitude } = {} } = req.body;
+                // Buscar a loja pelo ID
+                const loja = yield (0, loja_1.buscarLojaPorId)(id);
+                if (!loja) {
+                    logger_1.warnLogger.warn('Loja não encontrada', { id });
+                    return res.status(404).json({ message: 'Loja não encontrada.' });
+                }
+                // Criar um objeto de atualização somente com os campos definidos
+                const novosDados = {};
+                if (logradouro || bairro || cidade || estado || numero || cep) {
+                    novosDados.endereco = {
+                        logradouro: logradouro || "",
+                        bairro: bairro || "",
+                        cidade: cidade || "",
+                        estado: estado || "",
+                        numero: numero || "",
+                        cep: cep || "",
+                    };
+                    if (cep) {
+                        let novasCoordenadas;
+                        const coordenadasCepLoja = yield (0, converterCep_1.converterCepCoordenadas)(cep);
+                        if (!coordenadasCepLoja) {
+                            logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep });
+                            if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
+                                return res.status(400).json({ message: 'Coordenadas não encontradas para o CEP fornecido. Por favor, forneça latitude e longitude.' });
+                            }
+                            else {
+                                const { latitude, longitude } = req.body.coordenadas;
+                                novasCoordenadas = {
+                                    latitude,
+                                    longitude
+                                };
+                            }
+                        }
+                        else {
+                            novasCoordenadas = {
+                                latitude: coordenadasCepLoja.lat,
+                                longitude: coordenadasCepLoja.lng
+                            };
+                        }
+                        novosDados.coordenadas = novasCoordenadas;
+                    }
+                }
+                if (nome) {
+                    novosDados.nome = nome;
+                }
+                if (telefone) {
+                    novosDados.telefone = telefone;
+                }
+                // Atualizar a loja com os dados fornecidos
+                const lojaAtualizada = yield (0, loja_1.atualizarLoja)(id, novosDados);
+                logger_1.infoLogger.info('Loja atualizada com sucesso', { id, novosDados });
+                res.status(200).json({ message: 'Loja atualizada com sucesso', loja: lojaAtualizada });
+            }
+            catch (err) {
+                logger_1.errorLogger.error('Erro ao atualizar a loja', { error: err.message });
+                res.status(500).json({ message: 'Erro ao atualizar a loja', error: err.message });
             }
         });
     }

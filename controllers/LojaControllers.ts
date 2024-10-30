@@ -1,7 +1,7 @@
 // controllers/lojaController.ts
 import { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { criarLoja, Loja } from '../models/loja';
+import { criarLoja, Loja, buscarLojaPorId, atualizarLoja  } from '../models/loja';
 import { buscarEnderecoCep } from '../services/buscarEnderecoCep';
 import { converterCepCoordenadas } from '../services/converterCep';
 import { infoLogger, warnLogger, errorLogger } from '../utils/logger';
@@ -94,6 +94,77 @@ class LojaController {
         } catch (err:any) {
             errorLogger.error('Erro ao criar a loja', { error: err.message });
             res.status(500).json({ message: 'Erro ao criar a loja', error: err.message });
+        }
+    }
+
+        static async updateLoja(req: Request, res: any) {
+        try {
+            const { id } = req.params;
+            const {
+                nome,
+                telefone,
+                endereco: {logradouro, bairro, cidade, estado, numero, cep,} = {},
+                coordenadas:{latitude, longitude}= {} 
+            } = req.body;
+
+            // Buscar a loja pelo ID
+            const loja = await buscarLojaPorId(id);
+            
+            if (!loja) {
+                warnLogger.warn('Loja não encontrada', { id });
+                return res.status(404).json({ message: 'Loja não encontrada.' });
+            }
+
+            // Criar um objeto de atualização somente com os campos definidos
+            const novosDados: Partial<Loja> = {};
+                if (logradouro || bairro || cidade || estado || numero || cep) {
+                    novosDados.endereco = {
+                        logradouro: logradouro || "",
+                        bairro: bairro || "",
+                        cidade: cidade || "",
+                        estado: estado || "",
+                        numero: numero || "",
+                        cep: cep || "",  
+                    };
+                    if(cep){
+                        let novasCoordenadas: { latitude: number; longitude: number };
+                        const coordenadasCepLoja = await converterCepCoordenadas(cep);
+                            if (!coordenadasCepLoja) {
+                                warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep });
+                                if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
+                                    return res.status(400).json({ message: 'Coordenadas não encontradas para o CEP fornecido. Por favor, forneça latitude e longitude.' });
+                                } else {
+                                    const { latitude, longitude } = req.body.coordenadas;
+                                    novasCoordenadas = {
+                                        latitude,
+                                        longitude
+                                    };
+                                }
+                            } else {
+                                novasCoordenadas = {
+                                    latitude: coordenadasCepLoja.lat ,
+                                    longitude: coordenadasCepLoja.lng
+                                };
+                            }
+                            novosDados.coordenadas = novasCoordenadas;
+                            }
+                }
+                if (nome) {
+                    novosDados.nome = nome;
+                }
+
+                if (telefone) {
+                    novosDados.telefone = telefone;
+                }
+
+            // Atualizar a loja com os dados fornecidos
+            const lojaAtualizada = await atualizarLoja(id, novosDados);
+            infoLogger.info('Loja atualizada com sucesso', { id, novosDados });
+
+            res.status(200).json({ message: 'Loja atualizada com sucesso', loja: lojaAtualizada });
+        } catch (err: any) {
+            errorLogger.error('Erro ao atualizar a loja', { error: err.message });
+            res.status(500).json({ message: 'Erro ao atualizar a loja', error: err.message });
         }
     }
 }
