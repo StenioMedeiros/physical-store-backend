@@ -5,8 +5,8 @@ import { criarLoja, Loja, buscarLojaPorId, atualizarLoja  } from '../models/loja
 import { buscarEnderecoCep } from '../services/buscarEnderecoCep';
 import { converterCepCoordenadas } from '../services/converterCep';
 import { infoLogger, warnLogger, errorLogger } from '../utils/logger';
-
-const pool: Pool = require('../db/database');
+import calcularDistancia from '../utils/calcularDistancia';
+import pool from '../db/database';
 
 
 // Controlador de Loja
@@ -165,6 +165,93 @@ class LojaController {
         } catch (err: any) {
             errorLogger.error('Erro ao atualizar a loja', { error: err.message });
             res.status(500).json({ message: 'Erro ao atualizar a loja', error: err.message });
+        }
+    }
+        static async buscarLojasProximas(req: Request, res: any) {
+        const { endereco } = req.body as { endereco: { cep: string } };
+
+        try {
+            const coordenadasUsuario = await converterCepCoordenadas(endereco.cep);
+
+            if (!coordenadasUsuario) {
+                infoLogger.warn(`Coordenadas não encontradas para o CEP: ${endereco.cep}`);
+                return res.status(404).json({ error: 'Coordenadas não encontradas para o CEP fornecido' });
+            }
+
+            const lojas = await pool.query(
+                'SELECT nome, logradouro, numero, bairro, cidade, estado, latitude, longitude FROM lojas'
+            );
+
+            if (!lojas.rows || lojas.rows.length === 0) {
+                infoLogger.warn('Nenhuma loja encontrada no banco de dados');
+                return res.status(404).json({ error: 'Nenhuma loja encontrada' });
+            }
+            const lojasDistancias: {
+                nome: string;
+                distancia: number;
+                endereco: {logradouro: string; numero: string; bairro: string; cidade: string; estado: string;
+                };
+            }[] = [];
+
+            // Calcular a distância 100 km
+            for (const loja of lojas.rows) {
+                const distancia = calcularDistancia(
+                    coordenadasUsuario.lat,
+                    coordenadasUsuario.lng,
+                    loja.latitude,
+                    loja.longitude
+                );
+
+                if (distancia <= 100) {
+                    lojasDistancias.push({
+                        nome: loja.nome,
+                        distancia: parseFloat(distancia.toFixed(2)),
+                        endereco: {logradouro: loja.logradouro, numero: loja.numero, bairro: loja.bairro, cidade: loja.cidade, estado: loja.estado,
+                        },
+                    });
+                }
+            }
+
+            let lojasProximas;
+            if (lojasDistancias.length > 0) {
+                // Se houver lojas no raio de 100 km
+                lojasDistancias.sort((a, b) => a.distancia - b.distancia);
+                lojasProximas = lojasDistancias;
+            } else {
+                // Se não houver
+                const todasLojasDistancias = lojas.rows.map(loja => ({
+                    nome: loja.nome,
+                    distancia: calcularDistancia(
+                        coordenadasUsuario.lat,
+                        coordenadasUsuario.lng,
+                        loja.latitude,
+                        loja.longitude
+                    ),
+                    endereco: {
+                        logradouro: loja.logradouro,
+                        numero: loja.numero,
+                        bairro: loja.bairro,
+                        cidade: loja.cidade,
+                        estado: loja.estado,
+                    },
+                }));
+
+                todasLojasDistancias.sort((a, b) => a.distancia - b.distancia);
+                lojasProximas = todasLojasDistancias.slice(0, 2).map(loja => ({
+                    nome: loja.nome,
+                    distancia: parseFloat(loja.distancia.toFixed(2)),
+                    endereco: loja.endereco,
+                }));
+            }
+
+            res.json({
+                cepConsulta: endereco,
+                coordenadasConsulta: coordenadasUsuario,
+                lojasProximas,
+            });
+        } catch (error) {
+            errorLogger.error('Erro ao buscar lojas próximas: ' + error);
+            res.status(500).json({ error: 'Erro ao buscar lojas próximas' });
         }
     }
 }

@@ -12,4 +12,6 @@ const router = (0, express_1.Router)(); // Cria uma instância do Router
 router.post('/create', LojaControllers_1.default.createLoja);
 //Atualizar loja
 router.put('/:id', LojaControllers_1.default.updateLoja);
+//Buscar lojas procimas
+router.get('/buscarLojas', LojaControllers_1.default.buscarLojasProximas);
 exports.default = router;
