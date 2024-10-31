@@ -14,4 +14,6 @@ router.post('/create', LojaControllers_1.default.createLoja);
 router.put('/:id', LojaControllers_1.default.updateLoja);
 //Buscar lojas procimas
 router.get('/buscarLojas', LojaControllers_1.default.buscarLojasProximas);
+//Apagar loja por id
+router.delete('/:id', LojaControllers_1.default.apagarLoja);
 exports.default = router;

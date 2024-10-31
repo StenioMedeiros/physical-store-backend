@@ -222,5 +222,24 @@ class LojaController {
             }
         });
     }
+    static apagarLoja(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            try {
+                if (!id) {
+                    return res.status(400).json({ error: 'ID da loja não fornecido' });
+                }
+                const resultado = yield database_1.default.query('DELETE FROM lojas WHERE id = $1', [id]);
+                if (resultado.rowCount === 0) {
+                    return res.status(404).json({ error: 'Loja não encontrada' });
+                }
+                res.status(200).json({ message: 'Loja apagada com sucesso' });
+            }
+            catch (error) {
+                logger_1.errorLogger.error('Erro ao apagar loja: ' + error);
+                res.status(500).json({ error: 'Erro ao apagar loja' });
+            }
+        });
+    }
 }
 exports.default = LojaController;

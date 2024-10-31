@@ -15,4 +15,7 @@ router.put('/:id', LojaController.updateLoja);
 //Buscar lojas procimas
 router.get('/buscarLojas', LojaController.buscarLojasProximas);
 
+//Apagar loja por id
+router.delete('/:id', LojaController.apagarLoja);
+
 export default router; 

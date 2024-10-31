@@ -254,6 +254,26 @@ class LojaController {
             res.status(500).json({ error: 'Erro ao buscar lojas próximas' });
         }
     }
+
+        static async apagarLoja(req: Request, res: any) {
+            const { id } = req.params; 
+
+            try {
+                if (!id) {
+                    return res.status(400).json({ error: 'ID da loja não fornecido' });
+                }
+                const resultado = await pool.query('DELETE FROM lojas WHERE id = $1', [id]);
+
+                if (resultado.rowCount === 0) {
+                    return res.status(404).json({ error: 'Loja não encontrada' });
+                }
+
+                res.status(200).json({ message: 'Loja apagada com sucesso' });
+            } catch (error) {
+                errorLogger.error('Erro ao apagar loja: ' + error);
+                res.status(500).json({ error: 'Erro ao apagar loja' });
+            }
+        }
 }
 
 export default LojaController;
