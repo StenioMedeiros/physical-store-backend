@@ -119,7 +119,6 @@ async function updateStoreInDB(id: string, novosDados: Partial<Loja>) {
         throw new Error('Nenhum campo para atualizar.');
     }
     
-    console.log(fields.join(', '), values)
     const query = `UPDATE lojas SET ${fields.join(', ')} WHERE id = $${index}`;
     values.push(id);
 

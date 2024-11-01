@@ -34,7 +34,7 @@ class storeController {
                     logger_1.warnLogger.warn('CEP inválido ao tentar criar uma loja', { cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep });
                     return res.status(400).json({ message: 'O campo "cep" é obrigatório e deve ser um CEP válido de 8 dígitos.' });
                 }
-                const enderecoCompleto = yield (0, buscarEnderecoCep_1.buscarEnderecoCep)(endereco.cep);
+                const enderecoCompleto = yield (0, buscarEnderecoCep_1.searchAddressCep)(endereco.cep);
                 if (!enderecoCompleto) {
                     logger_1.warnLogger.warn('Endereço não encontrado para o CEP fornecido', { cep: endereco.cep });
                     return res.status(400).json({ message: 'CEP inválido ou não encontrado.' });
@@ -57,7 +57,7 @@ class storeController {
                 }
                 let novasCoordenadas;
                 // Buscar as coordenadas do CEP        
-                const coordenadasCepLoja = yield (0, converterCep_1.converterCepCoordenadas)(endereco.cep);
+                const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(endereco.cep);
                 if (!coordenadasCepLoja) {
                     logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
                     if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
@@ -118,7 +118,7 @@ class storeController {
                     };
                     if (cep) {
                         let novasCoordenadas;
-                        const coordenadasCepLoja = yield (0, converterCep_1.converterCepCoordenadas)(cep);
+                        const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(cep);
                         if (!coordenadasCepLoja) {
                             logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep });
                             if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
@@ -163,7 +163,7 @@ class storeController {
         return __awaiter(this, void 0, void 0, function* () {
             const { endereco } = req.body;
             try {
-                const coordenadasUsuario = yield (0, converterCep_1.converterCepCoordenadas)(endereco.cep);
+                const coordenadasUsuario = yield (0, converterCep_1.convertCepInCoordinate)(endereco.cep);
                 if (!coordenadasUsuario) {
                     logger_1.infoLogger.warn(`Coordenadas não encontradas para o CEP: ${endereco.cep}`);
                     return res.status(404).json({ error: 'Coordenadas não encontradas para o CEP fornecido' });

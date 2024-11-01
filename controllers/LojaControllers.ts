@@ -1,10 +1,10 @@
 // controllers/lojaController.ts
 import { Request, Response } from 'express';
 import { createStoreInDB, Loja, searchStoreID, updateStoreInDB  } from '../models/loja';
-import { buscarEnderecoCep } from '../services/buscarEnderecoCep';
-import { converterCepCoordenadas } from '../services/converterCep';
+import { searchAddressCep } from '../services/buscarEnderecoCep';
+import { convertCepInCoordinate } from '../services/converterCep';
 import { infoLogger, warnLogger, errorLogger } from '../utils/logger';
-import calcularDistancia from '../utils/calcularDistancia';
+import calculateDistamce from '../utils/calcularDistancia';
 import pool from '../db/database';
 
 
@@ -32,7 +32,7 @@ class storeController {
             }
 
 
-            const enderecoCompleto = await buscarEnderecoCep(endereco.cep);
+            const enderecoCompleto = await searchAddressCep(endereco.cep);
 
             if (!enderecoCompleto) {
                 warnLogger.warn('Endereço não encontrado para o CEP fornecido', { cep: endereco.cep });
@@ -61,7 +61,7 @@ class storeController {
             let novasCoordenadas: { latitude: number; longitude: number };
 
             // Buscar as coordenadas do CEP        
-            const coordenadasCepLoja = await converterCepCoordenadas(endereco.cep);
+            const coordenadasCepLoja = await convertCepInCoordinate(endereco.cep);
 
             if (!coordenadasCepLoja) {
                 warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
@@ -126,7 +126,7 @@ class storeController {
                     };
                     if(cep){
                         let novasCoordenadas: { latitude: number; longitude: number };
-                        const coordenadasCepLoja = await converterCepCoordenadas(cep);
+                        const coordenadasCepLoja = await convertCepInCoordinate(cep);
                             if (!coordenadasCepLoja) {
                                 warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep });
                                 if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
@@ -171,7 +171,7 @@ class storeController {
         const { endereco } = req.body as { endereco: { cep: string } };
 
         try {
-            const coordenadasUsuario = await converterCepCoordenadas(endereco.cep);
+            const coordenadasUsuario = await convertCepInCoordinate(endereco.cep);
 
             if (!coordenadasUsuario) {
                 infoLogger.warn(`Coordenadas não encontradas para o CEP: ${endereco.cep}`);
@@ -195,7 +195,7 @@ class storeController {
 
             // Calcular a distância de 100 km
             for (const loja of lojas.rows) {
-                const distancia = calcularDistancia(
+                const distancia = calculateDistamce(
                     coordenadasUsuario.lat,
                     coordenadasUsuario.lng,
                     loja.latitude,
@@ -226,7 +226,7 @@ class storeController {
                 // Se não houver lojas no raio de 100 km
                 const todasLojasDistancias = lojas.rows.map(loja => ({
                     nome: loja.nome,
-                    distancia: calcularDistancia(
+                    distancia: calculateDistamce(
                         coordenadasUsuario.lat,
                         coordenadasUsuario.lng,
                         loja.latitude,

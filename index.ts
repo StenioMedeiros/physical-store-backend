@@ -3,7 +3,7 @@ import express from 'express';
 import  pool  from './db/database'; 
 import dotenv from 'dotenv';
 import LojaRoutes from './routes/lojaRoutes';
-import {logConn } from 'c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger';
+import { logConn } from './utils/logger';
 
 dotenv.config();
 

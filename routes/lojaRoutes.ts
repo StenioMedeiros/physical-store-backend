@@ -13,7 +13,7 @@ router.post('/create', storeController.createStore);
 router.put('/:id', storeController.updateStore);
 
 //Buscar lojas procimas
-router.get('/buscarLojas', storeController.searchNearbyStore);
+router.get('/searchStore', storeController.searchNearbyStore);
 
 //Apagar loja por id
 router.delete('/:id', storeController.deleteStore);

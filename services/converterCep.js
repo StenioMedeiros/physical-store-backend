@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.converterCepCoordenadas = converterCepCoordenadas;
-const logger_1 = require("c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger");
+exports.convertCepInCoordinate = convertCepInCoordinate;
+const logger_1 = require("../utils/logger");
 const axios_1 = __importDefault(require("axios"));
 const chalk_1 = __importDefault(require("chalk"));
-function converterCepCoordenadas(cep) {
+function convertCepInCoordinate(cep) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b;
         (0, logger_1.logInfo)(`Iniciando a conversão do CEP: ${cep}`);
@@ -28,7 +28,6 @@ function converterCepCoordenadas(cep) {
             if (lojaLocation) {
                 const { lat, lng } = lojaLocation;
                 (0, logger_1.logInfo)(`Coordenadas encontradas para o CEP ${cep}: Latitude ${lat}, Longitude ${lng}`);
-                console.log(lat, lng);
                 return { lat, lng };
             }
             else {

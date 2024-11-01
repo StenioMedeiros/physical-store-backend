@@ -1,5 +1,4 @@
 //services/buscarEnderecoCep
-
 import axios from 'axios';
 
 interface Endereco {
@@ -14,8 +13,8 @@ interface Endereco {
     ddd: string;
     siafi: string;
 }
-
-const buscarEnderecoCep = async (cep: string): Promise<Endereco | null> => {
+//Buscar endereço por cep
+const searchAddressCep = async (cep: string): Promise<Endereco | null> => {
     try {
         const response = await axios.get<Endereco | { erro: boolean }>(`https://viacep.com.br/ws/${cep}/json/`);
         if ('erro' in response.data) {
@@ -27,4 +26,4 @@ const buscarEnderecoCep = async (cep: string): Promise<Endereco | null> => {
     }
 };
 
-export { buscarEnderecoCep };
+export { searchAddressCep };

@@ -1,5 +1,4 @@
 "use strict";
-//services/buscarEnderecoCep
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,9 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buscarEnderecoCep = void 0;
+exports.searchAddressCep = void 0;
+//services/buscarEnderecoCep
 const axios_1 = __importDefault(require("axios"));
-const buscarEnderecoCep = (cep) => __awaiter(void 0, void 0, void 0, function* () {
+//Buscar endereço por cep
+const searchAddressCep = (cep) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield axios_1.default.get(`https://viacep.com.br/ws/${cep}/json/`);
         if ('erro' in response.data) {
@@ -27,4 +28,4 @@ const buscarEnderecoCep = (cep) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error('Erro ao buscar o endereço no ViaCEP');
     }
 });
-exports.buscarEnderecoCep = buscarEnderecoCep;
+exports.searchAddressCep = searchAddressCep;

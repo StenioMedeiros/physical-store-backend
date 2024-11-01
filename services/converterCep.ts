@@ -1,6 +1,6 @@
 //services/convwerterCep
 
-import { logInfo, logWarn, logError } from 'c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger';
+import { logInfo, logWarn, logError } from '../utils/logger';
 import axios from 'axios';
 import chalk from 'chalk';
 
@@ -9,7 +9,7 @@ interface Coordenadas {
   lng: number;
 }
 
-async function converterCepCoordenadas(cep: string): Promise<Coordenadas | null> {
+async function convertCepInCoordinate(cep: string): Promise<Coordenadas | null> {
   logInfo(`Iniciando a conversão do CEP: ${cep}`);
 
   try {
@@ -21,7 +21,6 @@ async function converterCepCoordenadas(cep: string): Promise<Coordenadas | null>
     if (lojaLocation) {
       const { lat, lng } = lojaLocation;
       logInfo(`Coordenadas encontradas para o CEP ${cep}: Latitude ${lat}, Longitude ${lng}`);
-      console.log(lat, lng)
       return { lat, lng };
     } else {
       logWarn(`Nenhuma coordenada encontrada para o CEP ${cep}`);
@@ -35,5 +34,5 @@ async function converterCepCoordenadas(cep: string): Promise<Coordenadas | null>
   }
 }
 
-export { converterCepCoordenadas };
+export { convertCepInCoordinate };
 
