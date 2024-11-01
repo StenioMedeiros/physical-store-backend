@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const loja_1 = require("../models/loja");
 const buscarEnderecoCep_1 = require("../services/buscarEnderecoCep");
 const converterCep_1 = require("../services/converterCep");
+//import { infoLogger, warnLogger, errorLogger } from '../utils/logger';
 const logger_1 = require("../utils/logger");
 const calcularDistancia_1 = __importDefault(require("../utils/calcularDistancia"));
 const database_1 = __importDefault(require("../db/database"));
@@ -26,17 +27,17 @@ class storeController {
             try {
                 const { nome, endereco, telefone } = req.body;
                 if (!nome) {
-                    logger_1.warnLogger.warn('Nome inválido ao tentar criar uma loja', { nome });
+                    (0, logger_1.logWarn)('Nome inválido ao tentar criar uma loja');
                     return res.status(400).json({ message: 'O campo "nome" é obrigatório.' });
                 }
                 const isValidCep = (cep) => /^[0-9]{8}$/.test(cep);
                 if (!endereco.cep || !isValidCep(endereco.cep)) {
-                    logger_1.warnLogger.warn('CEP inválido ao tentar criar uma loja', { cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep });
+                    (0, logger_1.logWarn)(`CEP inválido ao tentar criar uma loja: ${endereco === null || endereco === void 0 ? void 0 : endereco.cep}`);
                     return res.status(400).json({ message: 'O campo "cep" é obrigatório e deve ser um CEP válido de 8 dígitos.' });
                 }
                 const enderecoCompleto = yield (0, buscarEnderecoCep_1.searchAddressCep)(endereco.cep);
                 if (!enderecoCompleto) {
-                    logger_1.warnLogger.warn('Endereço não encontrado para o CEP fornecido', { cep: endereco.cep });
+                    (0, logger_1.logWarn)(`Endereço não encontrado para o CEP fornecido: ${endereco === null || endereco === void 0 ? void 0 : endereco.cep}`);
                     return res.status(400).json({ message: 'CEP inválido ou não encontrado.' });
                 }
                 const novoEndereco = {
@@ -59,7 +60,7 @@ class storeController {
                 // Buscar as coordenadas do CEP        
                 const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(endereco.cep);
                 if (!coordenadasCepLoja) {
-                    logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep: endereco.cep });
+                    (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP fornecido.', ${endereco.cep}`);
                     if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
                         return res.status(400).json({ message: 'Coordenadas não encontradas para o CEP fornecido. Por favor, forneça latitude e longitude.' });
                     }
@@ -84,11 +85,11 @@ class storeController {
                     coordenadas: novasCoordenadas,
                     telefone
                 });
-                logger_1.infoLogger.info('Loja criada com sucesso', { nome, endereco: novoEndereco });
+                (0, logger_1.logInfo)(`Loja criada com sucesso. Nome: ${nome}, Endereço: ${novoEndereco}`);
                 res.status(201).json({ message: 'Loja criada com sucesso' });
             }
             catch (err) {
-                logger_1.errorLogger.error('Erro ao criar a loja', { error: err.message });
+                (0, logger_1.logError)(`Erro ao criar a loja: ${err.message}`);
                 res.status(500).json({ message: 'Erro ao criar a loja', error: err.message });
             }
         });
@@ -102,7 +103,7 @@ class storeController {
                 // Buscar a loja pelo ID
                 const loja = yield (0, loja_1.searchStoreID)(id);
                 if (!loja) {
-                    logger_1.warnLogger.warn('Loja não encontrada', { id });
+                    (0, logger_1.logWarn)(`Loja não encontrada', ${id}`);
                     return res.status(404).json({ message: 'Loja não encontrada.' });
                 }
                 // Criar um objeto de atualização somente com os campos definidos
@@ -120,7 +121,7 @@ class storeController {
                         let novasCoordenadas;
                         const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(cep);
                         if (!coordenadasCepLoja) {
-                            logger_1.warnLogger.warn('Coordenadas não encontradas para o CEP fornecido.', { cep });
+                            (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP fornecido: ${cep}`);
                             if (!req.body.coordenadas || !req.body.coordenadas.latitude || !req.body.coordenadas.longitude) {
                                 return res.status(400).json({ message: 'Coordenadas não encontradas para o CEP fornecido. Por favor, forneça latitude e longitude.' });
                             }
@@ -149,11 +150,11 @@ class storeController {
                 }
                 // Atualizar a loja com os dados fornecidos
                 const lojaAtualizada = yield (0, loja_1.updateStoreInDB)(id, novosDados);
-                logger_1.infoLogger.info('Loja atualizada com sucesso', { id, novosDados });
+                (0, logger_1.logInfo)(`Loja atualizada com sucesso. ID: ${id}, Novos dados: ${JSON.stringify(novosDados)}`);
                 res.status(200).json({ message: 'Loja atualizada com sucesso', loja: lojaAtualizada });
             }
             catch (err) {
-                logger_1.errorLogger.error('Erro ao atualizar a loja', { error: err.message });
+                (0, logger_1.logError)(`Erro ao atualizar a loja: ${err.message}`);
                 res.status(500).json({ message: 'Erro ao atualizar a loja', error: err.message });
             }
         });
@@ -165,12 +166,12 @@ class storeController {
             try {
                 const coordenadasUsuario = yield (0, converterCep_1.convertCepInCoordinate)(endereco.cep);
                 if (!coordenadasUsuario) {
-                    logger_1.infoLogger.warn(`Coordenadas não encontradas para o CEP: ${endereco.cep}`);
+                    (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP: ${endereco.cep}`);
                     return res.status(404).json({ error: 'Coordenadas não encontradas para o CEP fornecido' });
                 }
                 const lojas = yield database_1.default.query('SELECT nome, logradouro, numero, bairro, cidade, estado, latitude, longitude FROM lojas');
                 if (!lojas.rows || lojas.rows.length === 0) {
-                    logger_1.infoLogger.warn('Nenhuma loja encontrada no banco de dados');
+                    (0, logger_1.logWarn)('Nenhuma loja encontrada no banco de dados');
                     return res.status(404).json({ error: 'Nenhuma loja encontrada' });
                 }
                 const lojasDistancias = [];
@@ -230,7 +231,7 @@ class storeController {
                 });
             }
             catch (error) {
-                logger_1.errorLogger.error('Erro ao buscar lojas próximas: ' + error);
+                (0, logger_1.logError)(`Erro ao buscar lojas próximas: ${error}`);
                 res.status(500).json({ error: 'Erro ao buscar lojas próximas' });
             }
         });
@@ -250,7 +251,7 @@ class storeController {
                 res.status(200).json({ message: 'Loja apagada com sucesso' });
             }
             catch (error) {
-                logger_1.errorLogger.error('Erro ao apagar loja: ' + error);
+                (0, logger_1.logError)(`Erro ao apagar loja: ${error}`);
                 res.status(500).json({ error: 'Erro ao apagar loja' });
             }
         });

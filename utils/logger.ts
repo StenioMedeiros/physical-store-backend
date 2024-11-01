@@ -32,9 +32,6 @@ const warnLogger = createLogger({
 });
 
 // Exportando os loggers
-export { infoLogger, loggerConn, errorLogger, warnLogger };
-
-// Funções de log simplificadas
 export const logInfo = (message: string) => infoLogger.info(message);
 export const logWarn = (message: string) => warnLogger.warn(message);
 export const logError = (message: string) => errorLogger.error(message);
