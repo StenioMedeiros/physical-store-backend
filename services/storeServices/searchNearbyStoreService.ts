@@ -4,14 +4,12 @@ import { convertCepInCoordinate } from '../convertCep';
 import { logError, logWarn } from '../../utils/logger';
 
 export async function searchNearbyStoreService(cep: string) {
-    // Obter coordenadas do CEP do usuário
     const coordenadasUsuario = await convertCepInCoordinate(cep);
     if (!coordenadasUsuario) {
         logWarn(`Coordenadas não encontradas para o CEP: ${cep}`);
         throw new Error('Coordenadas não encontradas para o CEP fornecido');
     }
 
-    // Buscar todas as lojas do banco de dados
     const lojas = await pool.query(
         'SELECT nome, logradouro, numero, bairro, cidade, estado, latitude, longitude FROM lojas'
     );
@@ -53,7 +51,7 @@ export async function searchNearbyStoreService(cep: string) {
             lojasProximas: lojasDistancias,
         };
     } else {
-        // Se nenhuma loja estiver dentro de 100km, retornar as mais próximas
+        // Se nenhuma dentro de 100km
         const todasLojasDistancias = lojas.rows
             .map((loja) => ({
                 nome: loja.nome,

@@ -7,8 +7,8 @@ import { logError } from '../utils/logger';
 
 
 // Controlador de Loja
-class storeController {
-    // Método para criar uma nova loja
+class StoreController {
+    // Método para criar uma nova loja 
     static async createStore(req: Request, res: Response) {
         try {
             const { nome, endereco, telefone, coordenadas } = req.body;
@@ -54,4 +54,4 @@ class storeController {
     }
 }
 
-export default storeController;
+export default StoreController;

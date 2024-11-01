@@ -13,10 +13,8 @@ export async function updateStoreService(id: string, body: any) {
         throw new Error('Loja não encontrada.');
     }
 
-    // Criar um objeto de atualização somente com os campos definidos
     const novosDados: Partial<Loja> = {};
 
-    // Atualizar endereço se algum campo for fornecido
     if (logradouro || bairro || cidade || estado || numero || cep) {
         novosDados.endereco = {
             logradouro: logradouro || "",
@@ -27,7 +25,6 @@ export async function updateStoreService(id: string, body: any) {
             cep: cep || ""
         };
 
-        // Obter coordenadas baseadas no CEP, se fornecido
         if (cep) {
             const coordenadasCepLoja = await convertCepInCoordinate(cep);
             if (!coordenadasCepLoja) {
@@ -48,11 +45,9 @@ export async function updateStoreService(id: string, body: any) {
         }
     }
 
-    // Atualizar nome e telefone, se fornecidos
     if (nome) novosDados.nome = nome;
     if (telefone) novosDados.telefone = telefone;
 
-    // Atualizar a loja com os dados fornecidos
     const lojaAtualizada = await updateStoreInDB(id, novosDados);
     logInfo(`Loja atualizada com sucesso. ID: ${id}, Novos dados: ${JSON.stringify(novosDados)}`);
     return lojaAtualizada;
