@@ -1,7 +1,9 @@
+//services/storeServices/createStoreService
+
 import { searchAddressCep } from "../searchAddressCep";
 import { convertCepInCoordinate } from "../convertCep";
 import { logWarn, logInfo } from "../../utils/logger";
-import { createStoreInDB } from "../../models/loja";
+import { createStoreInDB } from "../../models/store";
 
 interface StoreData {
     nome: string;

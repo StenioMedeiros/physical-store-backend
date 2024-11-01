@@ -1,4 +1,4 @@
-//services/buscarEnderecoCep
+//services/searchAddressCep
 import axios from 'axios';
 
 interface Endereco {

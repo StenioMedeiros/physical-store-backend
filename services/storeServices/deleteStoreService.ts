@@ -1,3 +1,5 @@
+//services/storeServices/deleteStoreService
+
 import pool from '../../db/database';
 import { logInfo, logError } from '../../utils/logger';
 

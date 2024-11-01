@@ -1,7 +1,9 @@
-import { searchStoreID, updateStoreInDB } from "../../models/loja";
+//services/storeServices/updateStoreService
+
+import { searchStoreID, updateStoreInDB } from "../../models/store";
 import { convertCepInCoordinate } from "../convertCep";
 import { logWarn, logInfo } from "../../utils/logger";
-import { Loja } from "../../models/loja";
+import { Loja } from "../../models/store";
 
 export async function updateStoreService(id: string, body: any) {
     const { nome, telefone, endereco: { logradouro, bairro, cidade, estado, numero, cep } = {} } = body;

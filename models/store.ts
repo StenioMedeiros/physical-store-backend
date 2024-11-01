@@ -1,4 +1,4 @@
-// models/loja.ts
+// models/store.ts
 import pool from '../db/database'; 
 
 // Define a interface store

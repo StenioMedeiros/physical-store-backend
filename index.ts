@@ -1,4 +1,4 @@
-// src/index.ts
+//index.ts
 import express from 'express';
 import  pool  from './db/database'; 
 import dotenv from 'dotenv';
