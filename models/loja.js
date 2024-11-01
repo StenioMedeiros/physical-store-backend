@@ -12,13 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.criarLoja = void 0;
-exports.buscarLojaPorId = buscarLojaPorId;
-exports.atualizarLoja = atualizarLoja;
+exports.createStoreInDB = void 0;
+exports.searchStoreID = searchStoreID;
+exports.updateStoreInDB = updateStoreInDB;
 // models/loja.ts
 const database_1 = __importDefault(require("../db/database"));
 // Função para criar uma nova loja no banco de dados
-const criarLoja = (loja) => __awaiter(void 0, void 0, void 0, function* () {
+const createStoreInDB = (loja) => __awaiter(void 0, void 0, void 0, function* () {
     const query = `
         INSERT INTO lojas (nome, logradouro, bairro, cidade, estado, numero,telefone, cep, latitude, longitude)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -43,9 +43,9 @@ const criarLoja = (loja) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Erro ao criar loja:', error);
     }
 });
-exports.criarLoja = criarLoja;
+exports.createStoreInDB = createStoreInDB;
 // Função para buscar loja pelo ID
-function buscarLojaPorId(id) {
+function searchStoreID(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = 'SELECT * FROM lojas WHERE id = $1';
         const values = [id];
@@ -59,7 +59,7 @@ function buscarLojaPorId(id) {
         }
     });
 }
-function atualizarLoja(id, novosDados) {
+function updateStoreInDB(id, novosDados) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(novosDados, id);
         const fields = [];

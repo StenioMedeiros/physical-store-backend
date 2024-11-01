@@ -9,11 +9,11 @@ const LojaControllers_1 = __importDefault(require("../controllers/LojaController
 const router = (0, express_1.Router)(); // Cria uma instância do Router
 // CRUD routes para LojaController
 // Criar loja
-router.post('/create', LojaControllers_1.default.createLoja);
+router.post('/create', LojaControllers_1.default.createStore);
 //Atualizar loja
-router.put('/:id', LojaControllers_1.default.updateLoja);
+router.put('/:id', LojaControllers_1.default.updateStore);
 //Buscar lojas procimas
-router.get('/buscarLojas', LojaControllers_1.default.buscarLojasProximas);
+router.get('/buscarLojas', LojaControllers_1.default.searchNearbyStore);
 //Apagar loja por id
-router.delete('/:id', LojaControllers_1.default.apagarLoja);
+router.delete('/:id', LojaControllers_1.default.deleteStore);
 exports.default = router;

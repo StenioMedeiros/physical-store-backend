@@ -1,21 +1,21 @@
 //routes/LojaRoutes.ts
 import { Router } from 'express'; 
-import LojaController from '../controllers/LojaControllers'; 
+import storeController from '../controllers/LojaControllers'; 
 
 const router = Router(); // Cria uma instância do Router
 
 // CRUD routes para LojaController
 
 // Criar loja
-router.post('/create', LojaController.createLoja);
+router.post('/create', storeController.createStore);
 
 //Atualizar loja
-router.put('/:id', LojaController.updateLoja);
+router.put('/:id', storeController.updateStore);
 
 //Buscar lojas procimas
-router.get('/buscarLojas', LojaController.buscarLojasProximas);
+router.get('/buscarLojas', storeController.searchNearbyStore);
 
 //Apagar loja por id
-router.delete('/:id', LojaController.apagarLoja);
+router.delete('/:id', storeController.deleteStore);
 
 export default router; 

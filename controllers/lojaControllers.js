@@ -19,9 +19,9 @@ const logger_1 = require("../utils/logger");
 const calcularDistancia_1 = __importDefault(require("../utils/calcularDistancia"));
 const database_1 = __importDefault(require("../db/database"));
 // Controlador de Loja
-class LojaController {
+class storeController {
     // Método para criar uma nova loja
-    static createLoja(req, res) {
+    static createStore(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { nome, endereco, telefone } = req.body;
@@ -78,7 +78,7 @@ class LojaController {
                     };
                 }
                 // Criar a loja no banco de dados
-                yield (0, loja_1.criarLoja)({
+                yield (0, loja_1.createStoreInDB)({
                     nome,
                     endereco: novoEndereco,
                     coordenadas: novasCoordenadas,
@@ -93,13 +93,14 @@ class LojaController {
             }
         });
     }
-    static updateLoja(req, res) {
+    // Atualizar loja
+    static updateStore(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { nome, telefone, endereco: { logradouro, bairro, cidade, estado, numero, cep, } = {}, coordenadas: { latitude, longitude } = {} } = req.body;
+                const { nome, telefone, endereco: { logradouro, bairro, cidade, estado, numero, cep, } = {}, } = req.body;
                 // Buscar a loja pelo ID
-                const loja = yield (0, loja_1.buscarLojaPorId)(id);
+                const loja = yield (0, loja_1.searchStoreID)(id);
                 if (!loja) {
                     logger_1.warnLogger.warn('Loja não encontrada', { id });
                     return res.status(404).json({ message: 'Loja não encontrada.' });
@@ -147,7 +148,7 @@ class LojaController {
                     novosDados.telefone = telefone;
                 }
                 // Atualizar a loja com os dados fornecidos
-                const lojaAtualizada = yield (0, loja_1.atualizarLoja)(id, novosDados);
+                const lojaAtualizada = yield (0, loja_1.updateStoreInDB)(id, novosDados);
                 logger_1.infoLogger.info('Loja atualizada com sucesso', { id, novosDados });
                 res.status(200).json({ message: 'Loja atualizada com sucesso', loja: lojaAtualizada });
             }
@@ -157,7 +158,8 @@ class LojaController {
             }
         });
     }
-    static buscarLojasProximas(req, res) {
+    // buscr lojas próximas 
+    static searchNearbyStore(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { endereco } = req.body;
             try {
@@ -172,14 +174,19 @@ class LojaController {
                     return res.status(404).json({ error: 'Nenhuma loja encontrada' });
                 }
                 const lojasDistancias = [];
-                // Calcular a distância 100 km
+                // Calcular a distância de 100 km
                 for (const loja of lojas.rows) {
                     const distancia = (0, calcularDistancia_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude);
                     if (distancia <= 100) {
                         lojasDistancias.push({
                             nome: loja.nome,
                             distancia: parseFloat(distancia.toFixed(2)),
-                            endereco: { logradouro: loja.logradouro, numero: loja.numero, bairro: loja.bairro, cidade: loja.cidade, estado: loja.estado,
+                            endereco: {
+                                logradouro: loja.logradouro,
+                                numero: loja.numero,
+                                bairro: loja.bairro,
+                                cidade: loja.cidade,
+                                estado: loja.estado,
                             },
                         });
                     }
@@ -191,7 +198,7 @@ class LojaController {
                     lojasProximas = lojasDistancias;
                 }
                 else {
-                    // Se não houver
+                    // Se não houver lojas no raio de 100 km
                     const todasLojasDistancias = lojas.rows.map(loja => ({
                         nome: loja.nome,
                         distancia: (0, calcularDistancia_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude),
@@ -209,6 +216,12 @@ class LojaController {
                         distancia: parseFloat(loja.distancia.toFixed(2)),
                         endereco: loja.endereco,
                     }));
+                    return res.status(200).json({
+                        message: 'Não há lojas dentro de um raio de 100KM, as lojas mais próximas são:',
+                        lojasProximas,
+                        cep_Consultado: endereco,
+                        coordenadas_do_cep: coordenadasUsuario,
+                    });
                 }
                 res.json({
                     cepConsulta: endereco,
@@ -222,7 +235,8 @@ class LojaController {
             }
         });
     }
-    static apagarLoja(req, res) {
+    //Apagar loja 
+    static deleteStore(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
@@ -242,4 +256,4 @@ class LojaController {
         });
     }
 }
-exports.default = LojaController;
+exports.default = storeController;

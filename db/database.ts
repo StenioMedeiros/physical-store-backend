@@ -1,7 +1,7 @@
 // db/database.ts
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-import { logError,logConn } from 'c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger';
+import { logError, logConn } from '../utils/logger';
 
 dotenv.config();
 

@@ -16,7 +16,7 @@ exports.conn = void 0;
 // db/database.ts
 const pg_1 = require("pg");
 const dotenv_1 = __importDefault(require("dotenv"));
-const logger_1 = require("c:/Users/ESTENIO/prog/estagio-compas/p1.2/E-commerce/bakend/utils/logger");
+const logger_1 = require("../utils/logger");
 dotenv_1.default.config();
 const pool = new pg_1.Pool({
     max: 10,

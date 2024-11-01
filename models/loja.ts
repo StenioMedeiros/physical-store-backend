@@ -1,8 +1,8 @@
 // models/loja.ts
 import pool from '../db/database'; 
 
-// Define a interface para o modelo Loja
-interface Endereco {
+// Define a interface store
+interface Endereco {//address
     logradouro: string;
     bairro: string;
     cidade: string;
@@ -10,12 +10,12 @@ interface Endereco {
     numero: string;
     cep: string;
 }
-
+//coordinates
 interface coordenadas{
     latitude: Number;
     longitude: Number;
 }
-
+//interface Store
 interface Loja {
     nome: string;
     endereco: Endereco;
@@ -24,7 +24,7 @@ interface Loja {
 }
 
 // Função para criar uma nova loja no banco de dados
-const criarLoja = async (loja: { nome: string; endereco: any; coordenadas: any; telefone: string }): Promise<void> => {
+const createStoreInDB = async (loja: { nome: string; endereco: any; coordenadas: any; telefone: string }): Promise<void> => {
     const query = `
         INSERT INTO lojas (nome, logradouro, bairro, cidade, estado, numero,telefone, cep, latitude, longitude)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -41,8 +41,6 @@ const criarLoja = async (loja: { nome: string; endereco: any; coordenadas: any; 
         loja.endereco.cep,
         loja.coordenadas.latitude,
         loja.coordenadas.longitude,
-
-        
     ];
 
     try {
@@ -54,7 +52,7 @@ const criarLoja = async (loja: { nome: string; endereco: any; coordenadas: any; 
 };
 
 // Função para buscar loja pelo ID
-async function buscarLojaPorId(id: string) {
+async function searchStoreID(id: string) {
     const query = 'SELECT * FROM lojas WHERE id = $1'; 
     const values = [id];
 
@@ -66,7 +64,7 @@ async function buscarLojaPorId(id: string) {
         throw error; 
     }
 }
-async function atualizarLoja(id: string, novosDados: Partial<Loja>) {
+async function updateStoreInDB(id: string, novosDados: Partial<Loja>) {
     console.log(novosDados,id)
     const fields = [];
     const values = [];
@@ -128,4 +126,4 @@ async function atualizarLoja(id: string, novosDados: Partial<Loja>) {
     await pool.query(query, values); 
 }
 
-export { Loja, criarLoja, buscarLojaPorId, atualizarLoja };
+export { Loja, createStoreInDB, searchStoreID, updateStoreInDB };
