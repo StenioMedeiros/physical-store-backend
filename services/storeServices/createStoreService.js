@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createStoreService = createStoreService;
-const buscarEnderecoCep_1 = require("../buscarEnderecoCep");
-const converterCep_1 = require("../converterCep");
+const searchAddressCep_1 = require("../searchAddressCep");
+const convertCep_1 = require("../convertCep");
 const logger_1 = require("../../utils/logger");
 const loja_1 = require("../../models/loja");
 function createStoreService(data) {
@@ -26,7 +26,7 @@ function createStoreService(data) {
             (0, logger_1.logWarn)(`CEP inválido ao tentar criar uma loja: ${endereco.cep}`);
             throw new Error('O campo "cep" é obrigatório e deve ser um CEP válido de 8 dígitos.');
         }
-        const enderecoCompleto = yield (0, buscarEnderecoCep_1.searchAddressCep)(endereco.cep);
+        const enderecoCompleto = yield (0, searchAddressCep_1.searchAddressCep)(endereco.cep);
         if (!enderecoCompleto) {
             (0, logger_1.logWarn)(`Endereço não encontrado para o CEP fornecido: ${endereco.cep}`);
             throw new Error('CEP inválido ou não encontrado.');
@@ -46,7 +46,7 @@ function createStoreService(data) {
         }
         let novasCoordenadas = coordenadas;
         if (!coordenadas) {
-            const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(endereco.cep);
+            const coordenadasCepLoja = yield (0, convertCep_1.convertCepInCoordinate)(endereco.cep);
             if (!coordenadasCepLoja) {
                 (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP fornecido: ${endereco.cep}`);
                 throw new Error('Coordenadas não encontradas para o CEP fornecido. Por favor, forneça latitude e longitude.');

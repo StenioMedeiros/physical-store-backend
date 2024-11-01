@@ -1,6 +1,6 @@
 import pool from '../../db/database';
-import calculateDistance from '../../utils/calcularDistancia';
-import { convertCepInCoordinate } from '../converterCep';
+import calculateDistance from '../../utils/calculateDistance';
+import { convertCepInCoordinate } from '../convertCep';
 import { logError, logWarn } from '../../utils/logger';
 
 export async function searchNearbyStoreService(cep: string) {

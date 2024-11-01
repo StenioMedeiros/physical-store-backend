@@ -1,6 +1,6 @@
 //routes/LojaRoutes.ts
 import { Router } from 'express'; 
-import storeController from '../controllers/LojaControllers'; 
+import storeController from '../controllers/storeControllers'; 
 
 const router = Router(); // Cria uma instância do Router
 

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateStoreService = updateStoreService;
 const loja_1 = require("../../models/loja");
-const converterCep_1 = require("../converterCep");
+const convertCep_1 = require("../convertCep");
 const logger_1 = require("../../utils/logger");
 function updateStoreService(id, body) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -36,7 +36,7 @@ function updateStoreService(id, body) {
             };
             // Obter coordenadas baseadas no CEP, se fornecido
             if (cep) {
-                const coordenadasCepLoja = yield (0, converterCep_1.convertCepInCoordinate)(cep);
+                const coordenadasCepLoja = yield (0, convertCep_1.convertCepInCoordinate)(cep);
                 if (!coordenadasCepLoja) {
                     (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP: ${cep}`);
                     const { latitude, longitude } = body.coordenadas || {};

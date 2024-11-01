@@ -2,7 +2,7 @@
 import express from 'express';
 import  pool  from './db/database'; 
 import dotenv from 'dotenv';
-import LojaRoutes from './routes/lojaRoutes';
+import LojaRoutes from './routes/storeRoutes';
 import { logConn } from './utils/logger';
 
 dotenv.config();

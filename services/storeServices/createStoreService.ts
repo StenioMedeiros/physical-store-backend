@@ -1,5 +1,5 @@
-import { searchAddressCep } from "../buscarEnderecoCep";
-import { convertCepInCoordinate } from "../converterCep";
+import { searchAddressCep } from "../searchAddressCep";
+import { convertCepInCoordinate } from "../convertCep";
 import { logWarn, logInfo } from "../../utils/logger";
 import { createStoreInDB } from "../../models/loja";
 

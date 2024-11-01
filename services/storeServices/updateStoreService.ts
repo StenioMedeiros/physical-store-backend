@@ -1,5 +1,5 @@
 import { searchStoreID, updateStoreInDB } from "../../models/loja";
-import { convertCepInCoordinate } from "../converterCep";
+import { convertCepInCoordinate } from "../convertCep";
 import { logWarn, logInfo } from "../../utils/logger";
 import { Loja } from "../../models/loja";
 

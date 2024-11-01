@@ -14,13 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchNearbyStoreService = searchNearbyStoreService;
 const database_1 = __importDefault(require("../../db/database"));
-const calcularDistancia_1 = __importDefault(require("../../utils/calcularDistancia"));
-const converterCep_1 = require("../converterCep");
+const calculateDistance_1 = __importDefault(require("../../utils/calculateDistance"));
+const convertCep_1 = require("../convertCep");
 const logger_1 = require("../../utils/logger");
 function searchNearbyStoreService(cep) {
     return __awaiter(this, void 0, void 0, function* () {
         // Obter coordenadas do CEP do usuário
-        const coordenadasUsuario = yield (0, converterCep_1.convertCepInCoordinate)(cep);
+        const coordenadasUsuario = yield (0, convertCep_1.convertCepInCoordinate)(cep);
         if (!coordenadasUsuario) {
             (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP: ${cep}`);
             throw new Error('Coordenadas não encontradas para o CEP fornecido');
@@ -33,7 +33,7 @@ function searchNearbyStoreService(cep) {
         }
         const lojasDistancias = lojas.rows
             .map((loja) => {
-            const distancia = (0, calcularDistancia_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude);
+            const distancia = (0, calculateDistance_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude);
             return {
                 nome: loja.nome,
                 distancia: parseFloat(distancia.toFixed(2)),
@@ -61,7 +61,7 @@ function searchNearbyStoreService(cep) {
             const todasLojasDistancias = lojas.rows
                 .map((loja) => ({
                 nome: loja.nome,
-                distancia: (0, calcularDistancia_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude),
+                distancia: (0, calculateDistance_1.default)(coordenadasUsuario.lat, coordenadasUsuario.lng, loja.latitude, loja.longitude),
                 endereco: {
                     logradouro: loja.logradouro,
                     numero: loja.numero,
