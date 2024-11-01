@@ -1,7 +1,7 @@
 "use strict";
 // utils/calcularDistancia.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-function calcularDistancia(lat1, lon1, lat2, lon2) {
+function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Raio da Terra em quilômetros
     // Convertendo graus
     const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -15,4 +15,4 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Resultado em quilômetros
 }
-exports.default = calcularDistancia;
+exports.default = calculateDistance;

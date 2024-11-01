@@ -29,8 +29,6 @@ const warnLogger = (0, winston_1.createLogger)({
     transports: [new winston_1.transports.File({ filename: 'logs/warn.json' })],
 });
 // Exportando os loggers
-//export { infoLogger, loggerConn, errorLogger, warnLogger };
-// Funções de log simplificadas
 const logInfo = (message) => infoLogger.info(message);
 exports.logInfo = logInfo;
 const logWarn = (message) => warnLogger.warn(message);
