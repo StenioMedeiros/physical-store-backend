@@ -19,13 +19,11 @@ const convertCep_1 = require("../convertCep");
 const logger_1 = require("../../utils/logger");
 function searchNearbyStoreService(cep) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Obter coordenadas do CEP do usuário
         const coordenadasUsuario = yield (0, convertCep_1.convertCepInCoordinate)(cep);
         if (!coordenadasUsuario) {
             (0, logger_1.logWarn)(`Coordenadas não encontradas para o CEP: ${cep}`);
             throw new Error('Coordenadas não encontradas para o CEP fornecido');
         }
-        // Buscar todas as lojas do banco de dados
         const lojas = yield database_1.default.query('SELECT nome, logradouro, numero, bairro, cidade, estado, latitude, longitude FROM lojas');
         if (!lojas.rows || lojas.rows.length === 0) {
             (0, logger_1.logWarn)('Nenhuma loja encontrada no banco de dados');
@@ -57,7 +55,7 @@ function searchNearbyStoreService(cep) {
             };
         }
         else {
-            // Se nenhuma loja estiver dentro de 100km, retornar as mais próximas
+            // Se nenhuma dentro de 100km
             const todasLojasDistancias = lojas.rows
                 .map((loja) => ({
                 nome: loja.nome,

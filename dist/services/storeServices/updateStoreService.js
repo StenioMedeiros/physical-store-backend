@@ -22,9 +22,7 @@ function updateStoreService(id, body) {
             (0, logger_1.logWarn)(`Loja não encontrada. ID: ${id}`);
             throw new Error('Loja não encontrada.');
         }
-        // Criar um objeto de atualização somente com os campos definidos
         const novosDados = {};
-        // Atualizar endereço se algum campo for fornecido
         if (logradouro || bairro || cidade || estado || numero || cep) {
             novosDados.endereco = {
                 logradouro: logradouro || "",
@@ -34,7 +32,6 @@ function updateStoreService(id, body) {
                 numero: numero || "",
                 cep: cep || ""
             };
-            // Obter coordenadas baseadas no CEP, se fornecido
             if (cep) {
                 const coordenadasCepLoja = yield (0, convertCep_1.convertCepInCoordinate)(cep);
                 if (!coordenadasCepLoja) {
@@ -53,12 +50,10 @@ function updateStoreService(id, body) {
                 }
             }
         }
-        // Atualizar nome e telefone, se fornecidos
         if (nome)
             novosDados.nome = nome;
         if (telefone)
             novosDados.telefone = telefone;
-        // Atualizar a loja com os dados fornecidos
         const lojaAtualizada = yield (0, loja_1.updateStoreInDB)(id, novosDados);
         (0, logger_1.logInfo)(`Loja atualizada com sucesso. ID: ${id}, Novos dados: ${JSON.stringify(novosDados)}`);
         return lojaAtualizada;

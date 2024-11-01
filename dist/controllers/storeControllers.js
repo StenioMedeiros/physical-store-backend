@@ -15,8 +15,8 @@ const searchNearbyStoreService_1 = require("../services/storeServices/searchNear
 const deleteStoreService_1 = require("../services/storeServices/deleteStoreService");
 const logger_1 = require("../utils/logger");
 // Controlador de Loja
-class storeController {
-    // Método para criar uma nova loja
+class StoreController {
+    // Método para criar uma nova loja 
     static createStore(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -70,4 +70,4 @@ class storeController {
         });
     }
 }
-exports.default = storeController;
+exports.default = StoreController;

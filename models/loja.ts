@@ -65,7 +65,6 @@ async function searchStoreID(id: string) {
     }
 }
 async function updateStoreInDB(id: string, novosDados: Partial<Loja>) {
-    console.log(novosDados,id)
     const fields = [];
     const values = [];
     let index = 1;

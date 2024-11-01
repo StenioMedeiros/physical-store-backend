@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const storeControllers_1 = __importDefault(require("../controllers/storeControllers"));
 const router = (0, express_1.Router)(); // Cria uma instância do Router
-// CRUD routes para LojaController
+// CRUD routes para storeController
 // Criar loja
 router.post('/create', storeControllers_1.default.createStore);
 //Atualizar loja
