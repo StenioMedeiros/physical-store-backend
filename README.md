@@ -5,7 +5,7 @@ API para gerenciamento de lojas físicas, permitindo operações CRUD e busca de
 ## Tecnologias
 
 - **Node.js**: ambiente de execução.
-- **Express**: framework para criação de servidores.
+- **Express**:  facilita a criação de rotas organizadas e moduladas para cada operação de CRUD
 - **PostgreSQL**: banco de dados para armazenamento das informações das lojas.
 - **Axios**: biblioteca para realizar requisições HTTP externas.
 - **dotenv**: para gerenciamento de variáveis de ambiente.
